@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>ZumIA</title>
+    <script src="jscolor.js"></script>
+    <script src="https://unpkg.com/brain.js@2.0.0-beta.15/dist/browser.js"></script>
+</head>
+<body>
+    <h1>Chosse a color on the input</h1>
+    <input value="#3399FF80" data-jscolor="{onInput:'colorChange(this)'}">
+    <div id="Box" style="margin: auto; width: 10vw; height: 10vh; display: block; background-color: red;">
+        Hola
+    </div>
+    <script type="text/javascript">
+        var network = new brain.NeuralNetwork();
+        network.train([
+            {input: {rojo:0, verde:0, azul:0}, output: {color:1}}, // negro debe ser blanco
+            {input: {rojo:1, verde:1, azul:1}, output: {color:0}} // blanco debe ser negro
+        ])
+
+
+
+        function colorChange(color){
+            let box = document.getElementById('Box');
+            let R = parseInt(color.channels.r);
+            let G = parseInt(color.channels.g);
+            let B = parseInt(color.channels.b);
+            box.style.backgroundColor = 'rgb('+R+','+G+','+B+')';
+            let entrada = {
+                rojo: R/255,
+                verde: G/255,
+                azul: B/255
+            }
+
+            let resultado = network.run(entrada);
+            console.log(resultado);
+            if(resultado.color >= .5){
+                box.style.color = "white";
+            }else{
+                box.style.color = "black";
+            }
+        }
+    </script>
+</body>
+</html>
